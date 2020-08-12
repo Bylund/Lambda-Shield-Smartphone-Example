@@ -23,7 +23,7 @@
     
     Version history:
     2020-03-07        v1.0.0        First release.
-
+    2020-08-13        v1.0.1        Bug fixes.
 */
 
 //Define included headers.
@@ -41,8 +41,7 @@ BLEUnsignedCharCharacteristic OxygenLevelChar("C83C027E-F105-4E0D-AA8F-801AC553D
 //Define pin assignments.
 #define           LED_STATUS_POWER                    7             /* Pin used for power the status LED, indicating we have power. */
 #define           LED_STATUS_HEATER                   6             /* Pin used for the heater status LED, indicating heater activity. */
-#define           CJ125_NSS_PIN                       5             /* Pin used for chip select in SPI communication. */
-#define           HEATER_OUTPUT_PIN                   3             /* Pin used for the PWM output to the heater circuit. */
+#define           HEATER_OUTPUT_PIN                   5             /* Pin used for the PWM output to the heater circuit. */
 #define           UB_ANALOG_INPUT_PIN                 2             /* Analog input for power supply.*/
 #define           UR_ANALOG_INPUT_PIN                 1             /* Analog input for temperature.*/
 #define           UA_ANALOG_INPUT_PIN                 0             /* Analog input for lambda.*/
@@ -177,11 +176,9 @@ void setup() {
   BLE.advertise();
 
   //Set up digital output pins.
-  pinMode(CJ125_NSS_PIN, OUTPUT);  
   pinMode(LED_STATUS_POWER, OUTPUT);
   pinMode(LED_STATUS_HEATER, OUTPUT);
   pinMode(HEATER_OUTPUT_PIN, OUTPUT);
-  digitalWrite(CJ125_NSS_PIN, HIGH);
   
 }
 
@@ -240,7 +237,7 @@ void loop() {
 
     //Ramp up phase, +0.4V / s until 100% PWM from 8.5V.
     float UHeater = 8.5;
-    while (CondensationPWM < 255 && adcValue_UB > UBAT_MIN && adcValue_UR > adcValue_UR_Optimal) {
+    while (adcValue_UB > UBAT_MIN && adcValue_UR > adcValue_UR_Optimal) {
   
       //Update Values.
       UpdateInputs();
